@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
 
+class ContentModel {
+  final String name;
+  final String position;
+
+  ContentModel(this.name, this.position);
+}
+
 class ListScreen extends StatefulWidget {
   const ListScreen({super.key});
 
@@ -8,12 +15,12 @@ class ListScreen extends StatefulWidget {
 }
 
 class _ListScreenState extends State<ListScreen> {
-  List<String> nameOfPerson = [];
+  List<ContentModel> nameOfPerson = [];
   TextEditingController nameController = TextEditingController();
 
   void addNameToList(String name) {
     setState(() {
-      nameOfPerson.add(name);
+      nameOfPerson.add(ContentModel(name, 'position'));
     });
   }
 
@@ -88,7 +95,7 @@ class _ListScreenState extends State<ListScreen> {
         itemCount: nameOfPerson.length,
         itemBuilder: (context, index) {
           final data = nameOfPerson[index];
-          return Text(data);
+          return Text(data.name);
         },
       ),
     );
