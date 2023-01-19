@@ -159,6 +159,11 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
                 child: ElevatedButton(
                   onPressed: isProfileCompleted()
                       ? () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const MyHomeScreen(),
+                              ));
                           showModalBottomSheet(
                             context: context,
                             builder: (context) {

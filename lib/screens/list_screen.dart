@@ -1,11 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-class ContentModel {
-  final String name;
-  final String position;
-
-  ContentModel(this.name, this.position);
-}
+import 'package:flutter_salt/screens/home_screen.dart';
+import 'package:flutter_salt/screens/views/contact_view.dart';
+import 'package:flutter_salt/screens/views/dashboard_view.dart';
 
 class ListScreen extends StatefulWidget {
   const ListScreen({super.key});
@@ -15,87 +12,49 @@ class ListScreen extends StatefulWidget {
 }
 
 class _ListScreenState extends State<ListScreen> {
-  List<ContentModel> nameOfPerson = [];
-  TextEditingController nameController = TextEditingController();
-
-  void addNameToList(String name) {
-    setState(() {
-      nameOfPerson.add(ContentModel(name, 'position'));
-    });
-  }
-
-  void showNameInput() {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return Column(
-          children: [
-            TextField(
-              controller: nameController,
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-                confirmNameInput();
-              },
-              child: const Text('Finish'),
-            )
-          ],
-        );
-      },
-    );
-  }
-
-  void confirmNameInput() {
-    Widget continueButton = TextButton(
-      onPressed: () {
-        Navigator.pop(context);
-        addNameToList(nameController.text);
-        nameController.clear();
-      },
-      child: const Text('Continue'),
-    );
-
-    Widget cancelButton = TextButton(
-      onPressed: () {
-        Navigator.pop(context);
-      },
-      child: const Text('Cancel'),
-    );
-
-    AlertDialog alertDialog = AlertDialog(
-      title: const Text('Alert Dialog'),
-      content: const Text('Are you sure ?'),
-      actions: [
-        cancelButton,
-        continueButton,
-      ],
-    );
-
-    showDialog(
-      context: context,
-      builder: (context) {
-        return alertDialog;
-      },
-    );
-  }
+  //Untuk List Screen
+  int selectedIndex = 0;
+  PageController pageController = PageController(initialPage: 0);
+  List<Widget> pages = [
+    DashboardView(),
+    ContactView(),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('List Screen'),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showNameInput();
+      bottomNavigationBar: BottomNavigationBar(
+          selectedItemColor: Colors.red,
+          unselectedItemColor: Colors.grey,
+          showUnselectedLabels: false,
+          currentIndex: selectedIndex,
+          onTap: (value) {
+            pageController.jumpToPage(value);
+            setState(() {
+              selectedIndex = value;
+            });
+          },
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(CupertinoIcons.home),
+              label: 'Dashboard',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(CupertinoIcons.person),
+              label: 'List Contact',
+            ),
+          ]),
+      body: PageView.builder(
+        controller: pageController,
+        physics: NeverScrollableScrollPhysics(),
+        onPageChanged: (value) {
+          setState(() {
+            selectedIndex = value;
+          });
         },
-      ),
-      body: ListView.builder(
-        itemCount: nameOfPerson.length,
+        itemCount: pages.length,
         itemBuilder: (context, index) {
-          final data = nameOfPerson[index];
-          return Text(data.name);
+          return pages[index];
         },
       ),
     );
